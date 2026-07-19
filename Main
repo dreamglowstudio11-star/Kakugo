@@ -1,0 +1,568 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>覚悟 — Kakugo | The Way of the Rōnin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #050506;
+      --bg-alt: #0b0c10;
+      --accent-red: #b71c1c;
+      --accent-gold: #cfa96b;
+      --text: #f5f5f5;
+      --muted: #b0b0b0;
+      --card: rgba(255, 255, 255, 0.03);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #111318, var(--bg));
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* Subtle parchment texture using gradients */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 10% 20%, rgba(255,255,255,0.04) 0, transparent 55%),
+        radial-gradient(circle at 80% 60%, rgba(255,255,255,0.03) 0, transparent 55%),
+        repeating-linear-gradient(
+          120deg,
+          rgba(255,255,255,0.02),
+          rgba(255,255,255,0.02) 2px,
+          transparent 2px,
+          transparent 4px
+        );
+      mix-blend-mode: soft-light;
+      opacity: 0.7;
+      z-index: -1;
+    }
+
+    header {
+      padding: 1.5rem 8vw;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: linear-gradient(to bottom, rgba(5,5,6,0.95), rgba(5,5,6,0.7), transparent);
+      backdrop-filter: blur(12px);
+    }
+
+    .logo-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .logo-kanji {
+      font-size: 1.4rem;
+      letter-spacing: 0.2em;
+    }
+
+    .logo-roman {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+    }
+
+    nav a {
+      margin-left: 1.5rem;
+      text-decoration: none;
+      color: var(--muted);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.16em;
+    }
+
+    nav a:hover {
+      color: var(--accent-gold);
+    }
+
+    main {
+      padding: 0 8vw 4rem;
+    }
+
+    /* Sakura petals */
+    .petal {
+      position: fixed;
+      width: 14px;
+      height: 10px;
+      background: radial-gradient(circle at 30% 30%, #ffd1e3 0, #f3a4c4 40%, #c46a8a 100%);
+      border-radius: 60% 40% 60% 40%;
+      opacity: 0.7;
+      pointer-events: none;
+      filter: blur(0.3px);
+      z-index: 1;
+      animation: fall linear infinite;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate3d(var(--start-x), -10vh, 0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.8;
+      }
+      100% {
+        transform: translate3d(var(--end-x), 110vh, 0) rotate(120deg);
+        opacity: 0;
+      }
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 80vh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+      gap: 3rem;
+      align-items: center;
+      padding-top: 4rem;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(2.6rem, 4.2vw, 3.6rem);
+      margin-bottom: 1rem;
+    }
+
+    .hero-text p {
+      max-width: 32rem;
+      line-height: 1.7;
+      color: var(--muted);
+      margin-bottom: 2rem;
+    }
+
+    .hero-pillars {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      margin-bottom: 2.5rem;
+    }
+
+    .pillar {
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.12);
+      padding: 0.4rem 1rem;
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+    }
+
+    .pillar:nth-child(1) { border-color: var(--accent-red); }
+    .pillar:nth-child(2) { border-color: var(--accent-gold); }
+    .pillar:nth-child(3) { border-color: #607d8b; }
+
+    .cta-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .btn {
+      padding: 0.85rem 1.6rem;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,0.18);
+      background: transparent;
+      color: var(--text);
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent-red), var(--accent-gold));
+      border: none;
+      color: #050506;
+      font-weight: 600;
+    }
+
+    .btn-secondary {
+      color: var(--muted);
+    }
+
+    .hero-art {
+      background: var(--card);
+      border-radius: 1.4rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 1.8rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .hero-art-frame {
+      background: radial-gradient(circle at 20% 0%, #2b2f3a, #050506);
+      border-radius: 1rem;
+      border: 1px solid rgba(255,255,255,0.12);
+      min-height: 260px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--muted);
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .hero-art-caption {
+      font-size: 0.85rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .hero-art-meta {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--accent-gold);
+    }
+
+    section {
+      margin-top: 4rem;
+    }
+
+    section h2 {
+      font-size: 1.3rem;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+    }
+
+    .section-subtitle {
+      margin-top: 0.6rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 32rem;
+      line-height: 1.6;
+    }
+
+    .artifacts-grid {
+      margin-top: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 1.8rem;
+    }
+
+    .artifact-card {
+      background: var(--card);
+      border-radius: 1.1rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+    }
+
+    .artifact-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      color: var(--muted);
+    }
+
+    .artifact-title {
+      font-size: 1rem;
+    }
+
+    .artifact-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .artifact-tag {
+      font-size: 0.75rem;
+      color: var(--accent-gold);
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .artifact-card:hover {
+      border-color: rgba(255,255,255,0.18);
+      transform: translateY(-2px);
+      transition: all 0.18s ease-out;
+    }
+
+    .rituals {
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 2.5rem;
+      align-items: flex-start;
+    }
+
+    .rituals-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1.2rem;
+    }
+
+    .ritual-item {
+      border-left: 2px solid rgba(255,255,255,0.12);
+      padding-left: 1rem;
+    }
+
+    .ritual-item-title {
+      font-size: 0.9rem;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+    }
+
+    .ritual-item-desc {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-top: 0.3rem;
+      line-height: 1.6;
+    }
+
+    .contact {
+      margin-top: 4rem;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      padding-top: 2.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.8rem;
+      font-size: 0.9rem;
+      color: var(--muted);
+    }
+
+    .contact strong {
+      color: var(--text);
+    }
+
+    footer {
+      padding: 2rem 8vw 2.5rem;
+      font-size: 0.8rem;
+      color: var(--muted);
+      border-top: 1px solid rgba(255,255,255,0.08);
+      text-align: center;
+    }
+
+    @media (max-width: 900px) {
+      .hero {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      .rituals {
+        grid-template-columns: minmax(0, 1fr);
+      }
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+      }
+      nav {
+        display: flex;
+        flex-wrap: wrap;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo-group">
+      <div class="logo-kanji">覚悟</div>
+      <div class="logo-roman">KAKUGO · THE WAY OF THE RŌNIN</div>
+    </div>
+    <nav>
+      <a href="#artifacts">Artifacts</a>
+      <a href="#rituals">Rituals</a>
+      <a href="#contact">Contact</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Sakura petals (JS will populate) -->
+    <div id="petals-container"></div>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Every Warrior Has a Ritual.</h1>
+        <p>
+          覚悟 — Kakugo — is the quiet moment before the blade is drawn, the robe is tied,
+          the first sip of coffee is taken. This is a space for those who treat
+          their mornings, their battles, and their art as ceremony.
+        </p>
+
+        <div class="hero-pillars">
+          <div class="pillar">Resolve</div>
+          <div class="pillar">Discipline</div>
+          <div class="pillar">Commitment</div>
+        </div>
+
+        <div class="cta-row">
+          <button class="btn btn-primary">Enter the Ritual</button>
+          <button class="btn btn-secondary">View Artifacts of Bushidō</button>
+        </div>
+      </div>
+
+      <aside class="hero-art">
+        <div class="hero-art-frame">
+          <!-- Replace this text with your ronin artwork image -->
+          RŌNIN HERO ARTWORK
+        </div>
+        <div class="hero-art-caption">
+          The masterless warrior stands between worlds — neither bound by a lord nor
+          freed from his own code. This is the face of Kakugo.
+        </div>
+        <div class="hero-art-meta">
+         浪人 — Rōnin · Masterless Warrior
+        </div>
+      </aside>
+    </section>
+
+    <!-- ARTIFACTS -->
+    <section id="artifacts">
+      <h2>Artifacts of Bushidō</h2>
+      <p class="section-subtitle">
+        Not products. Artifacts. Each piece is designed as a tool for ritual —
+        to be worn, held, or hung with intention.
+      </p>
+
+      <div class="artifacts-grid">
+        <article class="artifact-card">
+          <div class="artifact-label">Canvas Relic</div>
+          <div class="artifact-title">Ronin at Dawn</div>
+          <p class="artifact-desc">
+            A lone warrior framed against a rising sun. For those who greet the day
+            with quiet resolve and unspoken vows.
+          </p>
+          <div class="artifact-tag">Wall Ritual · Resolve</div>
+        </article>
+
+        <article class="artifact-card">
+          <div class="artifact-label">Ceremonial Apparel</div>
+          <div class="artifact-title">Kakugo Crest Tee</div>
+          <p class="artifact-desc">
+            Minimal kanji, maximum intention. A daily reminder that every choice is
+            a cut in the fabric of your story.
+          </p>
+          <div class="artifact-tag">Wearable Oath · Discipline</div>
+        </article>
+
+        <article class="artifact-card">
+          <div class="artifact-label">Ritual Vessel</div>
+          <div class="artifact-title">Ronin Roast Mug</div>
+          <p class="artifact-desc">
+            For warriors who greet the dawn with intention. A vessel for coffee,
+            tea, or quiet reflection before the day’s battles.
+          </p>
+          <div class="artifact-tag">Morning Rite · Commitment</div>
+        </article>
+
+        <article class="artifact-card">
+          <div class="artifact-label">Limited Collection</div>
+          <div class="artifact-title">Seven Virtues Set</div>
+          <p class="artifact-desc">
+            A curated series honoring the core tenets of Bushidō — each piece
+            dedicated to a different virtue of the warrior’s path.
+          </p>
+          <div class="artifact-tag">Collector’s Relics · Bushidō</div>
+        </article>
+      </div>
+    </section>
+
+    <!-- RITUALS -->
+    <section id="rituals">
+      <h2>Rituals of Kakugo</h2>
+      <p class="section-subtitle">
+        Every artifact belongs to a ritual. Every ritual belongs to a warrior.
+        Choose the rhythm that matches your path.
+      </p>
+
+      <div class="rituals">
+        <div class="rituals-list">
+          <div class="ritual-item">
+            <div class="ritual-item-title">Dawn Preparation</div>
+            <p class="ritual-item-desc">
+              The quiet hour before the world wakes. A mug, a canvas, a single
+              intention set for the day. Resolve is not loud — it’s chosen.
+            </p>
+          </div>
+          <div class="ritual-item">
+            <div class="ritual-item-title">Battle Readiness</div>
+            <p class="ritual-item-desc">
+              The moment you step into your work, your craft, your conflict.
+              Apparel becomes armor, art becomes a standard you fight beneath.
+            </p>
+          </div>
+          <div class="ritual-item">
+            <div class="ritual-item-title">Evening Reflection</div>
+            <p class="ritual-item-desc">
+              When the blade is sheathed and the day is weighed. A wall relic,
+              a warm drink, a glance at the ronin who reminds you why you chose
+              this path.
+            </p>
+          </div>
+        </div>
+
+        <div class="hero-art">
+          <div class="hero-art-frame">
+            RITUAL ALTAR SPACE
+          </div>
+          <div class="hero-art-caption">
+            Design your own altar — a corner of your home or studio where
+            artifacts of Bushidō gather. A physical reminder that your life
+            is not random; it is chosen.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact" class="contact">
+      <div><strong>Contact</strong></div>
+      <div>
+        Ready to bring Kakugo into your space? For commissions, collaborations,
+        or artifact inquiries:
+      </div>
+      <div><strong>Email:</strong> your-email@example.com</div>
+      <div><strong>Social:</strong> @yourhandle (Instagram / TikTok / etc.)</div>
+    </section>
+  </main>
+
+  <footer>
+    © 2026 覚悟 — Kakugo · The Way of the Rōnin · Artifacts of Bushidō
+  </footer>
+
+  <script>
+    // Simple sakura petal generator
+    const container = document.getElementById("petals-container");
+    const PETAL_COUNT = 18;
+
+    for (let i = 0; i < PETAL_COUNT; i++) {
+      const petal = document.createElement("div");
+      petal.className = "petal";
+
+      const startX = Math.random() * 100;
+      const endX = startX + (Math.random() * 20 - 10);
+
+      petal.style.setProperty("--start-x", startX + "vw");
+      petal.style.setProperty("--end-x", endX + "vw");
+
+      const duration = 18 + Math.random() * 10;
+      const delay = Math.random() * -duration;
+
+      petal.style.animationDuration = duration + "s";
+      petal.style.animationDelay = delay + "s";
+
+      container.appendChild(petal);
+    }
+  </script>
+</body>
+</html>
